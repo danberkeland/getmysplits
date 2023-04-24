@@ -14,7 +14,8 @@ function Stopwatch() {
   const [laps2, setLaps2] = useState([]);
   const [laps3, setLaps3] = useState([]);
   const [laps4, setLaps4] = useState([]);
-  const [clicked, setClicked] = useState(false)
+  const [clicked, setClicked] = useState(0)
+  
   const intervalRef = useRef();
   const [lapData, setLapData] = useState();
 
@@ -133,10 +134,10 @@ function Stopwatch() {
   const handleClick = (ct) => {
     console.log("ct", ct);
     handleLap(ct);
-    setClicked(true);
+    setClicked(ct);
     setTimeout(() => {
-      setClicked(false);
-    }, 3000);
+      setClicked(0);
+    }, 1000);
   };
 
   return (
@@ -150,7 +151,7 @@ function Stopwatch() {
           <div style={{ fontSize: "3.5em" }} key={runner.key}>
             <span className="previousSplits"></span>
 
-            <span className={`lapBox`} onClick={() => handleClick(runner.ct)}>
+            <span key={runner.key} className={clicked===runner.ct ? `lapBox lapBox${runner.ct}` : `lapBox`} onClick={() => handleClick(runner.ct)}>
               {runner.laps.length > 0 ? runner.label : splitLabelZero}
             </span>
           </div>
