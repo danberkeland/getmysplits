@@ -11,3 +11,28 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.lapBox {
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  padding: 10px;
+  display: inline-block;
+}
+.lapNumber {
+  display: block;
+  font-size: .75em;
+}
+.lapTime {
+  display: block;
+  font-weight: bold;
+  font-size: 2em;
+}
+.previousSplits {
+  font-size: .5em;
+  color: grey;
+}
+
+.lapList {
+  display: block;
+  font-size: 0.5em;
+}
+
