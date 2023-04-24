@@ -1,48 +1,27 @@
 import React, { useState, useRef, useEffect } from "react";
-
 import { Button } from "primereact/button";
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { formatData, formatLapTime, formatTime } from "./utils";
 
-//theme
 import "primereact/resources/themes/lara-light-indigo/theme.css";
-
-//core
 import "primereact/resources/primereact.min.css";
 
 function Stopwatch() {
   const [isRunning, setIsRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [laps, setLaps] = useState([]);
-  const [lastLapTime, setLastLapTime] = useState(0);
-  const [lastElapsedTime, setLastElapsedTime] = useState(0);
+  const [laps1, setLaps1] = useState([]);
+  const [laps2, setLaps2] = useState([]);
   const intervalRef = useRef();
   const [lapData, setLapData] = useState([]);
 
   useEffect(() => {
-    formatData()
-  },[laps])
+    setLapData(formatData(laps1));
+  }, [laps1]);
 
-  const formatData = () => {
-    const data = [];
-
-    for (let i = 0; i < laps.length; i++) {
-      const lapTime = laps[i];
-      const lapDiff = lapTime - (laps[i - 1] || 0);
-      const time800 = i < 1 ? null : laps[i] - (laps[i-2] || 0);
-      const time1600 = i < 3 ? null : laps[i] - (laps[i - 4] || 0);
-
-      data.push({
-        lap: i + 1,
-        lapTime: formatLapTime(lapDiff),
-        cumulativeLapTime: time800 ? formatLapTime(time800): '-',
-        lap3Diff: time1600 ? formatLapTime(time1600) : '-'
-      });
-    }
-
-    setLapData(data);
-  }
-
+  useEffect(() => {
+    setLapData(formatData(laps2));
+  }, [laps2]);
 
   const handleStart = () => {
     if (!isRunning) {
@@ -60,82 +39,79 @@ function Stopwatch() {
     }
   };
 
-  const handleLap = () => {
+  const handleLap1 = () => {
     if (isRunning) {
-      setLaps([...laps, elapsedTime]);
-      
+      setLaps1([...laps1, elapsedTime]);
+    }
+  };
+
+  const handleLap2 = () => {
+    if (isRunning) {
+      setLaps2([...laps2, elapsedTime]);
     }
   };
 
   const handleReset = () => {
     setIsRunning(false);
     setElapsedTime(0);
-    setLaps([]);
+    setLaps1([]);
+    setLaps2([]);
     clearInterval(intervalRef.current);
   };
 
-  const formatTime = (timeInMs) => {
-    const minutes = Math.floor(timeInMs / 60000);
-    const seconds = Math.floor((timeInMs % 60000) / 1000);
-    const milliseconds = Math.floor((timeInMs % 1000) / 10);
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}.${milliseconds.toString().padStart(2, "0")}`;
-  };
-
-  const formatLapTime = (lapTimeInMs) => {
-    if (lapTimeInMs >= 100000) {
-      const minutes = Math.floor(lapTimeInMs / 60000);
-      const seconds = Math.floor((lapTimeInMs % 60000) / 1000);
-      return `${minutes.toString()}:${seconds.toString().padStart(2, "0")}`;
-    } else {
-      const seconds = Math.floor(lapTimeInMs / 1000);
-      const milliseconds = Math.floor((lapTimeInMs % 1000) / 10);
-      //return `${seconds.toString()}.${milliseconds.toString().padStart(2, "0")}`;
-      return `${seconds.toString()}`;
-    }
-  };
-
-  const splitLabel = (
+  const splitLabel1 = (
     <div className="lapBox">
-      <span className="lapNumber">{`Lap ${laps.length}`}</span>
+      <span className="runnerName">{`Runner 1`}</span>
+      <span className="lapNumber">{`Lap ${laps1.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
-        Number(laps[laps.length - 1]) - Number(laps[laps.length - 2] || 0)
+        Number(laps1[laps1.length - 1]) - Number(laps1[laps1.length - 2] || 0)
       )}`}</span>
-      {/*<span className="lapTime">{`+${formatLapTime(laps[laps.length-1] - laps[laps.length-2] || 0)}`}</span>*/}
     </div>
   );
 
-  const splitLabelZero = "SPLIT"
+  const splitLabel2 = (
+    <div className="lapBox">
+      <span className="runnerName">{`Runner 2`}</span>
+      <span className="lapNumber">{`Lap ${laps2.length}`}</span>
+      <span className="lapTime">{`${formatLapTime(
+        Number(laps2[laps2.length - 1]) - Number(laps2[laps2.length - 2] || 0)
+      )}`}</span>
+    </div>
+  );
 
-  
+  const splitLabelZero = "SPLIT";
 
   return (
     <div>
       <h1>Stopwatch</h1>
-      <div className="runningTime" style={{ fontSize: "3em" }}>{formatTime(elapsedTime)}</div>
-
-      <div style={{ fontSize: "3.5em" }}>
-        <span className="previousSplits"></span>
-        <br />
-        {
-          <span className="lapBox" onClick={handleLap}>
-            {laps.length > 0 ? splitLabel : splitLabelZero}
-          </span>
-        }
+      <div className="runningTime" style={{ fontSize: "3em" }}>
+        {formatTime(elapsedTime)}
       </div>
-      
+      <div className="twoRunners">
+        <div style={{ fontSize: "3.5em" }}>
+          <span className="previousSplits"></span>
+          <br />
+          <span className="lapBox" onClick={handleLap1}>
+            {laps1.length > 0 ? splitLabel1 : splitLabelZero}
+          </span>
+        </div>
+
+        <div style={{ fontSize: "3.5em" }}>
+          <span className="previousSplits"></span>
+          <br />
+          <span className="lapBox" onClick={handleLap2}>
+            {laps2.length > 0 ? splitLabel2 : splitLabelZero}
+          </span>
+        </div>
+      </div>
 
       <div>
         {isRunning ? (
-          <>
-            <Button
-              label="Stop"
-              className="p-button-lg p-button-danger"
-              onClick={handleStop}
-            />
-           
-          </>
+          <Button
+            label="Stop"
+            className="p-button-lg p-button-danger"
+            onClick={handleStop}
+          />
         ) : (
           <Button
             label="Start"
@@ -147,15 +123,15 @@ function Stopwatch() {
           label="Reset"
           className="p-button-secondary"
           onClick={handleReset}
-          disabled={laps.length === 0 && !isRunning}
+          disabled={laps1.length === 0 && !isRunning}
         />
       </div>
       <DataTable value={lapData}>
-      <Column field="lap" header="Lap" />
-      <Column field="lapTime" header="400" />
-      <Column field="cumulativeLapTime" header="800" />
-      <Column field="lap3Diff" header="1600" />
-    </DataTable>
+        <Column field="lap" header="Lap" />
+        <Column field="lapTime" header="400" />
+        <Column field="cumulativeLapTime" header="800" />
+        <Column field="lap3Diff" header="1600" />
+      </DataTable>
     </div>
   );
 }

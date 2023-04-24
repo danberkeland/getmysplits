@@ -17,14 +17,20 @@ code {
   padding: 10px;
   display: inline-block;
 }
+.runnerName {
+  display: block;
+  font-size: .5em;
+}
+
 .lapNumber {
   display: block;
   font-size: .75em;
 }
+
 .lapTime {
   display: block;
   font-weight: bold;
-  font-size: 2em;
+  font-size: 1.5em;
 }
 .previousSplits {
   font-size: .5em;
@@ -40,5 +46,10 @@ code {
   display: flex;
   align-items: left;
   margin-left: 28%;
+}
+
+.twoRunners {
+  display: flex;
+  justify-content: space-around;
 }
 
