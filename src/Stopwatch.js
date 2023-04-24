@@ -111,7 +111,7 @@ function Stopwatch() {
   return (
     <div>
       <h1>Stopwatch</h1>
-      <div style={{ fontSize: "3em" }}>{formatTime(elapsedTime)}</div>
+      <div className="runningTime" style={{ fontSize: "3em" }}>{formatTime(elapsedTime)}</div>
 
       <div style={{ fontSize: "3.5em" }}>
         <span className="previousSplits"></span>

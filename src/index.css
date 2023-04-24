@@ -36,3 +36,9 @@ code {
   font-size: 0.5em;
 }
 
+.runningTime {
+  display: flex;
+  align-items: left;
+  margin-left: 28%;
+}
+
