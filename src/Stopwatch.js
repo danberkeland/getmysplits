@@ -14,6 +14,7 @@ function Stopwatch() {
   const [laps2, setLaps2] = useState([]);
   const [laps3, setLaps3] = useState([]);
   const [laps4, setLaps4] = useState([]);
+  const [names, setNames] = useState(["Molly","Leila","Kate","Kim"])
   const [clicked, setClicked] = useState(0)
   
   const intervalRef = useRef();
@@ -84,7 +85,7 @@ function Stopwatch() {
 
   const splitLabel1 = (
     <div className={clicked===1 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{`Molly`}</span>
+      <span className="runnerName">{names[0]}</span>
       <span className="lapNumber">{`Lap ${laps1.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
         laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0)
@@ -94,7 +95,7 @@ function Stopwatch() {
 
   const splitLabel2 = (
     <div className={clicked===2 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{`Leila`}</span>
+      <span className="runnerName">{names[1]}</span>
       <span className="lapNumber">{`Lap ${laps2.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
         laps2[laps2.length - 1] - (laps2[laps2.length - 2] || 0)
@@ -104,7 +105,7 @@ function Stopwatch() {
 
   const splitLabel3 = (
     <div className={clicked===3 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{`Kate`}</span>
+      <span className="runnerName">{names[2]}</span>
       <span className="lapNumber">{`Lap ${laps3.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
         laps3[laps3.length - 1] - (laps3[laps3.length - 2] || 0)
@@ -114,7 +115,7 @@ function Stopwatch() {
 
   const splitLabel4 = (
     <div className={clicked===4 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{`Kim`}</span>
+      <span className="runnerName">{names[3]}</span>
       <span className="lapNumber">{`Lap ${laps4.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
         laps4[laps4.length - 1] - (laps4[laps4.length - 2] || 0)
@@ -123,10 +124,10 @@ function Stopwatch() {
   );
 
   const runners = [
-    { laps: laps1, label: splitLabel1, ct: 1, key: "r1", name:"Molly" },
-    { laps: laps2, label: splitLabel2, ct: 2, key: "r2", name:"Leila" },
-    { laps: laps3, label: splitLabel3, ct: 3, key: "r3", name:"Kate" },
-    { laps: laps4, label: splitLabel4, ct: 4, key: "r4", name:"Kim" },
+    { laps: laps1, label: splitLabel1, ct: 1, key: "r1", name:names[0] },
+    { laps: laps2, label: splitLabel2, ct: 2, key: "r2", name:names[1] },
+    { laps: laps3, label: splitLabel3, ct: 3, key: "r3", name:names[2] },
+    { laps: laps4, label: splitLabel4, ct: 4, key: "r4", name:names[3] },
   ];
 
   
