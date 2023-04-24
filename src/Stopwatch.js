@@ -142,7 +142,7 @@ function Stopwatch() {
 
   return (
     <div>
-      <h1>Stopwatch</h1>
+      <h1>Get My Splits</h1>
       <div className="runningTime" style={{ fontSize: "3em" }}>
         {formatTime(elapsedTime)}
       </div>
