@@ -17,6 +17,14 @@ code {
   padding: 10px;
   display: inline-block;
 }
+
+.lapBox1, .lapBox2, .lapBox3, .lapBox4 {
+  transform: scale(1.1);
+  transition: transform 3s ease;
+}
+
+
+
 .runnerName {
   display: block;
   font-size: .5em;
@@ -48,8 +56,12 @@ code {
   margin-left: 28%;
 }
 
-.twoRunners {
-  display: flex;
-  justify-content: space-around;
+.fourRunners {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row: auto auto;
+  grid-row-gap: 15px;
+  
+
 }
 

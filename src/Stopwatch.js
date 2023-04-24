@@ -12,12 +12,31 @@ function Stopwatch() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [laps1, setLaps1] = useState([]);
   const [laps2, setLaps2] = useState([]);
+  const [laps3, setLaps3] = useState([]);
+  const [laps4, setLaps4] = useState([]);
+  const [clicked, setClicked] = useState(false)
   const intervalRef = useRef();
-  const [lapData, setLapData] = useState([]);
+  const [lapData, setLapData] = useState();
 
   useEffect(() => {
-    setLapData(formatData(laps1 || laps2));
-  }, [laps1, laps2]);
+    console.log("lapData", lapData);
+  }, [lapData]);
+
+  useEffect(() => {
+    setLapData(formatData(laps1));
+  }, [laps1]);
+
+  useEffect(() => {
+    setLapData(formatData(laps2));
+  }, [laps2]);
+
+  useEffect(() => {
+    setLapData(formatData(laps3));
+  }, [laps3]);
+
+  useEffect(() => {
+    setLapData(formatData(laps4));
+  }, [laps4]);
 
   const handleStart = () => {
     if (!isRunning) {
@@ -35,15 +54,20 @@ function Stopwatch() {
     }
   };
 
-  const handleLap1 = () => {
+  const handleLap = (runner) => {
     if (isRunning) {
-      setLaps1([...laps1, elapsedTime]);
-    }
-  };
-
-  const handleLap2 = () => {
-    if (isRunning) {
-      setLaps2([...laps2, elapsedTime]);
+      if (runner === 1) {
+        setLaps1([...laps1, elapsedTime]);
+      }
+      if (runner === 2) {
+        setLaps2([...laps2, elapsedTime]);
+      }
+      if (runner === 3) {
+        setLaps3([...laps3, elapsedTime]);
+      }
+      if (runner === 4) {
+        setLaps4([...laps4, elapsedTime]);
+      }
     }
   };
 
@@ -52,6 +76,8 @@ function Stopwatch() {
     setElapsedTime(0);
     setLaps1([]);
     setLaps2([]);
+    setLaps3([]);
+    setLaps4([]);
     clearInterval(intervalRef.current);
   };
 
@@ -75,12 +101,43 @@ function Stopwatch() {
     </div>
   );
 
+  const splitLabel3 = (
+    <div className="lapBox">
+      <span className="runnerName">{`Runner 3`}</span>
+      <span className="lapNumber">{`Lap ${laps3.length}`}</span>
+      <span className="lapTime">{`${formatLapTime(
+        laps3[laps3.length - 1] - (laps3[laps3.length - 2] || 0)
+      )}`}</span>
+    </div>
+  );
+
+  const splitLabel4 = (
+    <div className="lapBox">
+      <span className="runnerName">{`Runner 4`}</span>
+      <span className="lapNumber">{`Lap ${laps4.length}`}</span>
+      <span className="lapTime">{`${formatLapTime(
+        laps4[laps4.length - 1] - (laps4[laps4.length - 2] || 0)
+      )}`}</span>
+    </div>
+  );
+
   const runners = [
-    { laps: laps1, label: splitLabel1 },
-    { laps: laps2, label: splitLabel2 },
+    { laps: laps1, label: splitLabel1, ct: 1, key: "r1" },
+    { laps: laps2, label: splitLabel2, ct: 2, key: "r2" },
+    { laps: laps3, label: splitLabel3, ct: 3, key: "r3" },
+    { laps: laps4, label: splitLabel4, ct: 4, key: "r4" },
   ];
 
   const splitLabelZero = "SPLIT";
+
+  const handleClick = (ct) => {
+    console.log("ct", ct);
+    handleLap(ct);
+    setClicked(true);
+    setTimeout(() => {
+      setClicked(false);
+    }, 3000);
+  };
 
   return (
     <div>
@@ -88,15 +145,12 @@ function Stopwatch() {
       <div className="runningTime" style={{ fontSize: "3em" }}>
         {formatTime(elapsedTime)}
       </div>
-      <div className="twoRunners">
+      <div className="fourRunners">
         {runners.map((runner) => (
-          <div style={{ fontSize: "3.5em" }} key={runner.label}>
+          <div style={{ fontSize: "3.5em" }} key={runner.key}>
             <span className="previousSplits"></span>
-            <br />
-            <span
-              className="lapBox"
-              onClick={runner.laps === laps1 ? handleLap1 : handleLap2}
-            >
+
+            <span className={`lapBox`} onClick={() => handleClick(runner.ct)}>
               {runner.laps.length > 0 ? runner.label : splitLabelZero}
             </span>
           </div>
