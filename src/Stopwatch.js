@@ -83,7 +83,7 @@ function Stopwatch() {
   };
 
   const splitLabel1 = (
-    <div className="lapBox">
+    <div className={clicked===1 ? `lapBox lapBox1` : `lapBox`}>
       <span className="runnerName">{`Runner 1`}</span>
       <span className="lapNumber">{`Lap ${laps1.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
@@ -93,7 +93,7 @@ function Stopwatch() {
   );
 
   const splitLabel2 = (
-    <div className="lapBox">
+    <div className={clicked===2 ? `lapBox lapBox1` : `lapBox`}>
       <span className="runnerName">{`Runner 2`}</span>
       <span className="lapNumber">{`Lap ${laps2.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
@@ -103,7 +103,7 @@ function Stopwatch() {
   );
 
   const splitLabel3 = (
-    <div className="lapBox">
+    <div className={clicked===3 ? `lapBox lapBox1` : `lapBox`}>
       <span className="runnerName">{`Runner 3`}</span>
       <span className="lapNumber">{`Lap ${laps3.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
@@ -113,7 +113,7 @@ function Stopwatch() {
   );
 
   const splitLabel4 = (
-    <div className="lapBox">
+    <div className={clicked===4 ? `lapBox lapBox1` : `lapBox`}>
       <span className="runnerName">{`Runner 4`}</span>
       <span className="lapNumber">{`Lap ${laps4.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
