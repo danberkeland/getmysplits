@@ -84,7 +84,7 @@ function Stopwatch() {
 
   const splitLabel1 = (
     <div className={clicked===1 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{`Runner 1`}</span>
+      <span className="runnerName">{`Molly`}</span>
       <span className="lapNumber">{`Lap ${laps1.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
         laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0)
@@ -94,7 +94,7 @@ function Stopwatch() {
 
   const splitLabel2 = (
     <div className={clicked===2 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{`Runner 2`}</span>
+      <span className="runnerName">{`Leila`}</span>
       <span className="lapNumber">{`Lap ${laps2.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
         laps2[laps2.length - 1] - (laps2[laps2.length - 2] || 0)
@@ -104,7 +104,7 @@ function Stopwatch() {
 
   const splitLabel3 = (
     <div className={clicked===3 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{`Runner 3`}</span>
+      <span className="runnerName">{`Kate`}</span>
       <span className="lapNumber">{`Lap ${laps3.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
         laps3[laps3.length - 1] - (laps3[laps3.length - 2] || 0)
@@ -114,7 +114,7 @@ function Stopwatch() {
 
   const splitLabel4 = (
     <div className={clicked===4 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{`Runner 4`}</span>
+      <span className="runnerName">{`Kim`}</span>
       <span className="lapNumber">{`Lap ${laps4.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
         laps4[laps4.length - 1] - (laps4[laps4.length - 2] || 0)
@@ -123,13 +123,13 @@ function Stopwatch() {
   );
 
   const runners = [
-    { laps: laps1, label: splitLabel1, ct: 1, key: "r1" },
-    { laps: laps2, label: splitLabel2, ct: 2, key: "r2" },
-    { laps: laps3, label: splitLabel3, ct: 3, key: "r3" },
-    { laps: laps4, label: splitLabel4, ct: 4, key: "r4" },
+    { laps: laps1, label: splitLabel1, ct: 1, key: "r1", name:"Molly" },
+    { laps: laps2, label: splitLabel2, ct: 2, key: "r2", name:"Leila" },
+    { laps: laps3, label: splitLabel3, ct: 3, key: "r3", name:"Kate" },
+    { laps: laps4, label: splitLabel4, ct: 4, key: "r4", name:"Kim" },
   ];
 
-  const splitLabelZero = "SPLIT";
+  
 
   const handleClick = (ct) => {
     console.log("ct", ct);
@@ -152,7 +152,7 @@ function Stopwatch() {
             <span className="previousSplits"></span>
 
             <span key={runner.key} className={clicked===runner.ct ? `lapBox lapBox${runner.ct}` : `lapBox`} onClick={() => handleClick(runner.ct)}>
-              {runner.laps.length > 0 ? runner.label : splitLabelZero}
+              {runner.laps.length > 0 ? runner.label : runner.name}
             </span>
           </div>
         ))}
