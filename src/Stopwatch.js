@@ -16,12 +16,8 @@ function Stopwatch() {
   const [lapData, setLapData] = useState([]);
 
   useEffect(() => {
-    setLapData(formatData(laps1));
-  }, [laps1]);
-
-  useEffect(() => {
-    setLapData(formatData(laps2));
-  }, [laps2]);
+    setLapData(formatData(laps1 || laps2));
+  }, [laps1, laps2]);
 
   const handleStart = () => {
     if (!isRunning) {
@@ -64,7 +60,7 @@ function Stopwatch() {
       <span className="runnerName">{`Runner 1`}</span>
       <span className="lapNumber">{`Lap ${laps1.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
-        Number(laps1[laps1.length - 1]) - Number(laps1[laps1.length - 2] || 0)
+        laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0)
       )}`}</span>
     </div>
   );
@@ -74,10 +70,15 @@ function Stopwatch() {
       <span className="runnerName">{`Runner 2`}</span>
       <span className="lapNumber">{`Lap ${laps2.length}`}</span>
       <span className="lapTime">{`${formatLapTime(
-        Number(laps2[laps2.length - 1]) - Number(laps2[laps2.length - 2] || 0)
+        laps2[laps2.length - 1] - (laps2[laps2.length - 2] || 0)
       )}`}</span>
     </div>
   );
+
+  const runners = [
+    { laps: laps1, label: splitLabel1 },
+    { laps: laps2, label: splitLabel2 },
+  ];
 
   const splitLabelZero = "SPLIT";
 
@@ -88,23 +89,19 @@ function Stopwatch() {
         {formatTime(elapsedTime)}
       </div>
       <div className="twoRunners">
-        <div style={{ fontSize: "3.5em" }}>
-          <span className="previousSplits"></span>
-          <br />
-          <span className="lapBox" onClick={handleLap1}>
-            {laps1.length > 0 ? splitLabel1 : splitLabelZero}
-          </span>
-        </div>
-
-        <div style={{ fontSize: "3.5em" }}>
-          <span className="previousSplits"></span>
-          <br />
-          <span className="lapBox" onClick={handleLap2}>
-            {laps2.length > 0 ? splitLabel2 : splitLabelZero}
-          </span>
-        </div>
+        {runners.map((runner) => (
+          <div style={{ fontSize: "3.5em" }} key={runner.label}>
+            <span className="previousSplits"></span>
+            <br />
+            <span
+              className="lapBox"
+              onClick={runner.laps === laps1 ? handleLap1 : handleLap2}
+            >
+              {runner.laps.length > 0 ? runner.label : splitLabelZero}
+            </span>
+          </div>
+        ))}
       </div>
-
       <div>
         {isRunning ? (
           <Button
