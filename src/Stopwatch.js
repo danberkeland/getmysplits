@@ -106,6 +106,8 @@ function Stopwatch() {
     </div>
   );
 
+  const splitLabelZero = "SPLIT"
+
   
 
   return (
@@ -116,11 +118,11 @@ function Stopwatch() {
       <div style={{ fontSize: "3.5em" }}>
         <span className="previousSplits"></span>
         <br />
-        {laps.length > 0 && (
+        {
           <span className="lapBox" onClick={handleLap}>
-            {splitLabel}
+            {laps.length > 0 ? splitLabel : splitLabelZero}
           </span>
-        )}
+        }
       </div>
       
 
@@ -132,13 +134,7 @@ function Stopwatch() {
               className="p-button-lg p-button-danger"
               onClick={handleStop}
             />
-            {!laps.length > 0 && (
-              <Button
-                label="Split"
-                className="p-button-lg"
-                onClick={handleLap}
-              />
-            )}
+           
           </>
         ) : (
           <Button
