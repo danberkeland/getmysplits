@@ -4,6 +4,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 import { TabMenu } from "primereact/tabmenu";
 
@@ -11,6 +12,7 @@ import { formatData, formatLapTime, formatTime } from "./utils";
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
+import 'primeicons/primeicons.css';
 
 function Stopwatch() {
   const [isRunning, setIsRunning] = useState(false);
@@ -19,7 +21,12 @@ function Stopwatch() {
   const [laps2, setLaps2] = useState([]);
   const [laps3, setLaps3] = useState([]);
   const [laps4, setLaps4] = useState([]);
-  const [names, setNames] = useState(["Runner 1", "Runner 2", "Runner 3", "Runner 4"]);
+  const [names, setNames] = useState([
+    "Runner 1",
+    "Runner 2",
+    "Runner 3",
+    "Runner 4",
+  ]);
   const [clicked, setClicked] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -112,6 +119,15 @@ function Stopwatch() {
   };
 
   const handleReset = () => {
+    confirmDialog({
+      message: "All splits will be deleted.  Are you sure?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => resetTimer(),
+    });
+  };
+
+  const resetTimer = () => {
     setIsRunning(false);
     setElapsedTime(0);
     setLaps1([]);
@@ -216,8 +232,53 @@ function Stopwatch() {
     setNames(newArray);
   };
 
+  const actionBodyTemplate = (rowData, { rowIndex }) => {
+    return (
+      <div className="p-d-flex p-jc-center">
+        <Button
+          icon="pi pi-trash"
+          className="p-button-danger"
+          onClick={() => handleDelete(activeIndex + 1, rowIndex)}
+        />
+      </div>
+    );
+  };
+
+  const handleDelete = (runner, rowIndex) => {
+    confirmDialog({
+      message: "You are deleting this accidental split.  Continue?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => deleteLap(runner, rowIndex),
+    });
+  };
+
+  const deleteLap = (runner, rowIndex) => {
+    if (runner === 1) {
+      const updatedLaps = [...laps1];
+      updatedLaps.splice(rowIndex, 1);
+      setLaps1(updatedLaps);
+    }
+    if (runner === 2) {
+      const updatedLaps = [...laps2];
+      updatedLaps.splice(rowIndex, 1);
+      setLaps2(updatedLaps);
+    }
+    if (runner === 3) {
+      const updatedLaps = [...laps3];
+      updatedLaps.splice(rowIndex, 1);
+      setLaps3(updatedLaps);
+    }
+    if (runner === 4) {
+      const updatedLaps = [...laps4];
+      updatedLaps.splice(rowIndex, 1);
+      setLaps4(updatedLaps);
+    }
+  };
+
   return (
     <div>
+      <ConfirmDialog />
       <Dialog
         visible={visible}
         onHide={hideDialog}
@@ -317,6 +378,7 @@ function Stopwatch() {
         <Column field="lapTime" header="400" />
         <Column field="cumulativeLapTime" header="800" />
         <Column field="lap3Diff" header="1600" />
+        <Column body={actionBodyTemplate} />
       </DataTable>
     </div>
   );
