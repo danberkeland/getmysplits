@@ -232,14 +232,24 @@ function Stopwatch() {
     setNames(newArray);
   };
 
-  const actionBodyTemplate = (rowData, { rowIndex }) => {
+  const deleteTemplate = (rowData, index) => {
+    console.log('rowIndex', index.rowIndex)
+    console.log('index.props.value', index.props.value)
+    console.log('rowData', rowData)
     return (
       <div className="p-d-flex p-jc-center">
         <Button
+          size="small"
           icon="pi pi-trash"
           className="p-button-danger"
-          onClick={() => handleDelete(activeIndex + 1, rowIndex)}
+          onClick={() => handleDelete(activeIndex + 1, index.rowIndex)}
         />
+        {(index.rowIndex+1) !== index.props.value.length && <Button
+          size="small"
+          icon="pi pi-arrow-down"
+          className="p-button-primary"
+          onClick={() => handleAdd(activeIndex + 1, index.rowIndex)}
+        />}
       </div>
     );
   };
@@ -285,6 +295,18 @@ function Stopwatch() {
       return rowData.lapTime;
     }
   };
+
+
+  const handleAdd = (runner, rowIndex) => {
+    confirmDialog({
+      message: "Did you miss a split and want to add one below now?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => AddLap(runner, rowIndex),
+    });
+  };
+
+  const AddLap = () => {}
   
 
   return (
@@ -389,7 +411,8 @@ function Stopwatch() {
         <Column header="400" body={lapTimeBody}/>
         <Column field="cumulativeLapTime" header="800" />
         <Column field="lap3Diff" header="1600" />
-        <Column body={actionBodyTemplate} />
+        <Column body={deleteTemplate} />
+        
       </DataTable>
     </div>
   );
