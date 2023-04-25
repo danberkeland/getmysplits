@@ -105,8 +105,9 @@ function Stopwatch() {
 
   const splitLabel1 = (
     <div className={clicked === 1 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{names[0]}</span>
+      
       <span className="lapNumber">{isRunning ? `Lap ${laps1.length}` : `Final`}</span>
+      <span className="runnerName">{names[0]}</span>
       <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
         laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0)
       )}` : `${formatLapTime(laps1[laps1.length-1])}`}</span>
@@ -115,8 +116,9 @@ function Stopwatch() {
 
   const splitLabel2 = (
     <div className={clicked === 2 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{names[1]}</span>
+     
       <span className="lapNumber">{isRunning ? `Lap ${laps2.length}` : `Final`}</span>
+      <span className="runnerName">{names[1]}</span>
       <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
         laps2[laps2.length - 1] - (laps2[laps2.length - 2] || 0)
       )}` : `${formatLapTime(laps2[laps2.length-1])}`}</span>
@@ -125,8 +127,9 @@ function Stopwatch() {
 
   const splitLabel3 = (
     <div className={clicked === 3 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{names[2]}</span>
+      
       <span className="lapNumber">{isRunning ? `Lap ${laps3.length}` : `Final`}</span>
+      <span className="runnerName">{names[2]}</span>
       <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
         laps3[laps3.length - 1] - (laps3[laps3.length - 2] || 0)
       )}` : `${formatLapTime(laps3[laps3.length-1])}`}</span>
@@ -135,8 +138,9 @@ function Stopwatch() {
 
   const splitLabel4 = (
     <div className={clicked === 4 ? `lapBox lapBox1` : `lapBox`}>
-      <span className="runnerName">{names[3]}</span>
+      
       <span className="lapNumber">{isRunning ? `Lap ${laps4.length}` : `Final`}</span>
+      <span className="runnerName">{names[3]}</span>
       <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
         laps4[laps4.length - 1] - (laps4[laps4.length - 2] || 0)
       )}` : `${formatLapTime(laps4[laps4.length-1])}`}</span>
