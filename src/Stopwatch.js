@@ -2,6 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+
+import { TabMenu } from "primereact/tabmenu";
+
 import { formatData, formatLapTime, formatTime } from "./utils";
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -14,11 +17,21 @@ function Stopwatch() {
   const [laps2, setLaps2] = useState([]);
   const [laps3, setLaps3] = useState([]);
   const [laps4, setLaps4] = useState([]);
-  const [names, setNames] = useState(["Molly","Leila","Kate","Kim"])
-  const [clicked, setClicked] = useState(0)
-  
+  const [names, setNames] = useState(["Molly", "Leila", "Kate", "Kim"]);
+  const [clicked, setClicked] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+
   const intervalRef = useRef();
   const [lapData, setLapData] = useState();
+
+  const items = [
+    {label: names[0]},
+    {label: names[1]},
+    {label: names[2]},
+    {label: names[3]}
+    
+];
 
   useEffect(() => {
     console.log("lapData", lapData);
@@ -39,6 +52,13 @@ function Stopwatch() {
   useEffect(() => {
     setLapData(formatData(laps4));
   }, [laps4]);
+
+  useEffect(() => {
+    if (activeIndex===0){setLapData(formatData(laps1))}
+    if (activeIndex===1){setLapData(formatData(laps2))}
+    if (activeIndex===2){setLapData(formatData(laps3))}
+    if (activeIndex===3){setLapData(formatData(laps4))}
+  },[activeIndex])
 
   const handleStart = () => {
     if (!isRunning) {
@@ -84,58 +104,57 @@ function Stopwatch() {
   };
 
   const splitLabel1 = (
-    <div className={clicked===1 ? `lapBox lapBox1` : `lapBox`}>
+    <div className={clicked === 1 ? `lapBox lapBox1` : `lapBox`}>
       <span className="runnerName">{names[0]}</span>
-      <span className="lapNumber">{`Lap ${laps1.length}`}</span>
-      <span className="lapTime">{`${formatLapTime(
+      <span className="lapNumber">{isRunning ? `Lap ${laps4.length}` : `Final`}</span>
+      <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
         laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0)
-      )}`}</span>
+      )}` : `${formatLapTime(laps1[laps1.length-1])}`}</span>
     </div>
   );
 
   const splitLabel2 = (
-    <div className={clicked===2 ? `lapBox lapBox1` : `lapBox`}>
+    <div className={clicked === 2 ? `lapBox lapBox1` : `lapBox`}>
       <span className="runnerName">{names[1]}</span>
-      <span className="lapNumber">{`Lap ${laps2.length}`}</span>
-      <span className="lapTime">{`${formatLapTime(
+      <span className="lapNumber">{isRunning ? `Lap ${laps2.length}` : `Final`}</span>
+      <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
         laps2[laps2.length - 1] - (laps2[laps2.length - 2] || 0)
-      )}`}</span>
+      )}` : `${formatLapTime(laps2[laps2.length-1])}`}</span>
     </div>
   );
 
   const splitLabel3 = (
-    <div className={clicked===3 ? `lapBox lapBox1` : `lapBox`}>
+    <div className={clicked === 3 ? `lapBox lapBox1` : `lapBox`}>
       <span className="runnerName">{names[2]}</span>
-      <span className="lapNumber">{`Lap ${laps3.length}`}</span>
-      <span className="lapTime">{`${formatLapTime(
+      <span className="lapNumber">{isRunning ? `Lap ${laps3.length}` : `Final`}</span>
+      <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
         laps3[laps3.length - 1] - (laps3[laps3.length - 2] || 0)
-      )}`}</span>
+      )}` : `${formatLapTime(laps3[laps3.length-1])}`}</span>
     </div>
   );
 
   const splitLabel4 = (
-    <div className={clicked===4 ? `lapBox lapBox1` : `lapBox`}>
+    <div className={clicked === 4 ? `lapBox lapBox1` : `lapBox`}>
       <span className="runnerName">{names[3]}</span>
-      <span className="lapNumber">{`Lap ${laps4.length}`}</span>
-      <span className="lapTime">{`${formatLapTime(
+      <span className="lapNumber">{isRunning ? `Lap ${laps4.length}` : `Final`}</span>
+      <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
         laps4[laps4.length - 1] - (laps4[laps4.length - 2] || 0)
-      )}`}</span>
+      )}` : `${formatLapTime(laps4[laps4.length-1])}`}</span>
     </div>
   );
 
   const runners = [
-    { laps: laps1, label: splitLabel1, ct: 1, key: "r1", name:names[0] },
-    { laps: laps2, label: splitLabel2, ct: 2, key: "r2", name:names[1] },
-    { laps: laps3, label: splitLabel3, ct: 3, key: "r3", name:names[2] },
-    { laps: laps4, label: splitLabel4, ct: 4, key: "r4", name:names[3] },
+    { laps: laps1, label: splitLabel1, ct: 1, key: "r1", name: names[0] },
+    { laps: laps2, label: splitLabel2, ct: 2, key: "r2", name: names[1] },
+    { laps: laps3, label: splitLabel3, ct: 3, key: "r3", name: names[2] },
+    { laps: laps4, label: splitLabel4, ct: 4, key: "r4", name: names[3] },
   ];
-
-  
 
   const handleClick = (ct) => {
     console.log("ct", ct);
     handleLap(ct);
     setClicked(ct);
+    setActiveIndex(ct-1)
     setTimeout(() => {
       setClicked(0);
     }, 1000);
@@ -152,7 +171,13 @@ function Stopwatch() {
           <div style={{ fontSize: "3.5em" }} key={runner.key}>
             <span className="previousSplits"></span>
 
-            <span key={runner.key} className={clicked===runner.ct ? `lapBox lapBox${runner.ct}` : `lapBox`} onClick={() => handleClick(runner.ct)}>
+            <span
+              key={runner.key}
+              className={
+                clicked === runner.ct ? `lapBox lapBox${runner.ct}` : `lapBox`
+              }
+              onClick={() => handleClick(runner.ct)}
+            >
               {runner.laps.length > 0 ? runner.label : runner.name}
             </span>
           </div>
@@ -179,6 +204,7 @@ function Stopwatch() {
           disabled={laps1.length === 0 && !isRunning}
         />
       </div>
+      <TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}/>
       <DataTable value={lapData}>
         <Column field="lap" header="Lap" />
         <Column field="lapTime" header="400" />

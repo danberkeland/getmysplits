@@ -41,6 +41,13 @@ code {
   font-weight: bold;
   font-size: 1.5em;
 }
+
+.stopped {
+  display: block;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
 .previousSplits {
   font-size: .5em;
   color: grey;
