@@ -106,7 +106,7 @@ function Stopwatch() {
   const splitLabel1 = (
     <div className={clicked === 1 ? `lapBox lapBox1` : `lapBox`}>
       <span className="runnerName">{names[0]}</span>
-      <span className="lapNumber">{isRunning ? `Lap ${laps4.length}` : `Final`}</span>
+      <span className="lapNumber">{isRunning ? `Lap ${laps1.length}` : `Final`}</span>
       <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
         laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0)
       )}` : `${formatLapTime(laps1[laps1.length-1])}`}</span>
