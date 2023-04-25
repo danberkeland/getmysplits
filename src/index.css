@@ -76,3 +76,13 @@ code {
 
 }
 
+.nameGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.nameGroup > * {
+  margin: 5px;
+ 
+}
+

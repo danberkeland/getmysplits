@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { InputText } from "primereact/inputtext";
+import { Dialog } from "primereact/dialog";
 
 import { TabMenu } from "primereact/tabmenu";
 
@@ -17,21 +19,29 @@ function Stopwatch() {
   const [laps2, setLaps2] = useState([]);
   const [laps3, setLaps3] = useState([]);
   const [laps4, setLaps4] = useState([]);
-  const [names, setNames] = useState(["Molly", "Leila", "Kate", "Kim"]);
+  const [names, setNames] = useState(["Runner 1", "Runner 2", "Runner 3", "Runner 4"]);
   const [clicked, setClicked] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const [visible, setVisible] = useState(false);
+
+  const showDialog = () => {
+    setVisible(true);
+  };
+
+  const hideDialog = () => {
+    setVisible(false);
+  };
 
   const intervalRef = useRef();
   const [lapData, setLapData] = useState();
 
   const items = [
-    {label: names[0]},
-    {label: names[1]},
-    {label: names[2]},
-    {label: names[3]}
-    
-];
+    { label: names[0] },
+    { label: names[1] },
+    { label: names[2] },
+    { label: names[3] },
+  ];
 
   useEffect(() => {
     console.log("lapData", lapData);
@@ -54,11 +64,19 @@ function Stopwatch() {
   }, [laps4]);
 
   useEffect(() => {
-    if (activeIndex===0){setLapData(formatData(laps1))}
-    if (activeIndex===1){setLapData(formatData(laps2))}
-    if (activeIndex===2){setLapData(formatData(laps3))}
-    if (activeIndex===3){setLapData(formatData(laps4))}
-  },[activeIndex])
+    if (activeIndex === 0) {
+      setLapData(formatData(laps1));
+    }
+    if (activeIndex === 1) {
+      setLapData(formatData(laps2));
+    }
+    if (activeIndex === 2) {
+      setLapData(formatData(laps3));
+    }
+    if (activeIndex === 3) {
+      setLapData(formatData(laps4));
+    }
+  }, [activeIndex]);
 
   const handleStart = () => {
     if (!isRunning) {
@@ -105,45 +123,65 @@ function Stopwatch() {
 
   const splitLabel1 = (
     <div className={clicked === 1 ? `lapBox lapBox1` : `lapBox`}>
-      
-      <span className="lapNumber">{isRunning ? `Lap ${laps1.length}` : `Final`}</span>
+      <span className="lapNumber">
+        {isRunning ? `Lap ${laps1.length}` : `Final`}
+      </span>
       <span className="runnerName">{names[0]}</span>
-      <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
-        laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0)
-      )}` : `${formatLapTime(laps1[laps1.length-1])}`}</span>
+      <span className={isRunning ? "lapTime" : "stopped"}>
+        {isRunning
+          ? `${formatLapTime(
+              laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0)
+            )}`
+          : `${formatLapTime(laps1[laps1.length - 1])}`}
+      </span>
     </div>
   );
 
   const splitLabel2 = (
     <div className={clicked === 2 ? `lapBox lapBox1` : `lapBox`}>
-     
-      <span className="lapNumber">{isRunning ? `Lap ${laps2.length}` : `Final`}</span>
+      <span className="lapNumber">
+        {isRunning ? `Lap ${laps2.length}` : `Final`}
+      </span>
       <span className="runnerName">{names[1]}</span>
-      <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
-        laps2[laps2.length - 1] - (laps2[laps2.length - 2] || 0)
-      )}` : `${formatLapTime(laps2[laps2.length-1])}`}</span>
+      <span className={isRunning ? "lapTime" : "stopped"}>
+        {isRunning
+          ? `${formatLapTime(
+              laps2[laps2.length - 1] - (laps2[laps2.length - 2] || 0)
+            )}`
+          : `${formatLapTime(laps2[laps2.length - 1])}`}
+      </span>
     </div>
   );
 
   const splitLabel3 = (
     <div className={clicked === 3 ? `lapBox lapBox1` : `lapBox`}>
-      
-      <span className="lapNumber">{isRunning ? `Lap ${laps3.length}` : `Final`}</span>
+      <span className="lapNumber">
+        {isRunning ? `Lap ${laps3.length}` : `Final`}
+      </span>
       <span className="runnerName">{names[2]}</span>
-      <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
-        laps3[laps3.length - 1] - (laps3[laps3.length - 2] || 0)
-      )}` : `${formatLapTime(laps3[laps3.length-1])}`}</span>
+      <span className={isRunning ? "lapTime" : "stopped"}>
+        {isRunning
+          ? `${formatLapTime(
+              laps3[laps3.length - 1] - (laps3[laps3.length - 2] || 0)
+            )}`
+          : `${formatLapTime(laps3[laps3.length - 1])}`}
+      </span>
     </div>
   );
 
   const splitLabel4 = (
     <div className={clicked === 4 ? `lapBox lapBox1` : `lapBox`}>
-      
-      <span className="lapNumber">{isRunning ? `Lap ${laps4.length}` : `Final`}</span>
+      <span className="lapNumber">
+        {isRunning ? `Lap ${laps4.length}` : `Final`}
+      </span>
       <span className="runnerName">{names[3]}</span>
-      <span className={isRunning ? "lapTime" : "stopped"}>{isRunning ? `${formatLapTime(
-        laps4[laps4.length - 1] - (laps4[laps4.length - 2] || 0)
-      )}` : `${formatLapTime(laps4[laps4.length-1])}`}</span>
+      <span className={isRunning ? "lapTime" : "stopped"}>
+        {isRunning
+          ? `${formatLapTime(
+              laps4[laps4.length - 1] - (laps4[laps4.length - 2] || 0)
+            )}`
+          : `${formatLapTime(laps4[laps4.length - 1])}`}
+      </span>
     </div>
   );
 
@@ -158,14 +196,70 @@ function Stopwatch() {
     console.log("ct", ct);
     handleLap(ct);
     setClicked(ct);
-    setActiveIndex(ct-1)
+    setActiveIndex(ct - 1);
     setTimeout(() => {
       setClicked(0);
     }, 1000);
   };
 
+  const handleName = () => {
+    setVisible(true);
+  };
+
+  const handleNames = (e, index) => {
+    // create a copy of the original array
+    const newArray = [...names];
+    // insert the new element at the specified index
+    newArray.splice(index, 1);
+    newArray.splice(index, 0, e);
+    // update the state with the new array
+    setNames(newArray);
+  };
+
   return (
     <div>
+      <Dialog
+        visible={visible}
+        onHide={hideDialog}
+        header="Enter Runner Names"
+        footer={
+          <div>
+            <Button label="Close" onClick={hideDialog} />
+          </div>
+        }
+      >
+        <div className="nameGroup">
+          <div>
+            <InputText
+              className="p-inputtext-lg"
+              value={names[0]}
+              onChange={(e) => handleNames(e.target.value, 0)}
+            />
+          </div>
+          <div>
+            <InputText
+              className="p-inputtext-lg"
+              value={names[1]}
+              onChange={(e) => handleNames(e.target.value, 1)}
+            />
+          </div>
+          <div>
+            <InputText
+              className="p-inputtext-lg"
+              value={names[2]}
+              onChange={(e) => handleNames(e.target.value, 2)}
+            />
+          </div>
+
+          <div>
+            <InputText
+              className="p-inputtext-lg"
+              value={names[3]}
+              onChange={(e) => handleNames(e.target.value, 3)}
+            />
+          </div>
+        </div>
+      </Dialog>
       <h1>Get My Splits</h1>
       <div className="runningTime" style={{ fontSize: "3em" }}>
         {formatTime(elapsedTime)}
@@ -207,8 +301,17 @@ function Stopwatch() {
           onClick={handleReset}
           disabled={laps1.length === 0 && !isRunning}
         />
+        <Button
+          label="Names"
+          className="p-button-primary"
+          onClick={handleName}
+        />
       </div>
-      <TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}/>
+      <TabMenu
+        model={items}
+        activeIndex={activeIndex}
+        onTabChange={(e) => setActiveIndex(e.index)}
+      />
       <DataTable value={lapData}>
         <Column field="lap" header="Lap" />
         <Column field="lapTime" header="400" />
