@@ -244,12 +244,13 @@ function Stopwatch() {
           className="p-button-danger"
           onClick={() => handleDelete(activeIndex + 1, index.rowIndex)}
         />
-        {(index.rowIndex+1) !== index.props.value.length && <Button
+        
+        <Button
           size="small"
-          icon="pi pi-arrow-down"
+          icon="pi pi-arrow-up"
           className="p-button-primary"
           onClick={() => handleAdd(activeIndex + 1, index.rowIndex)}
-        />}
+        />
       </div>
     );
   };
@@ -299,14 +300,55 @@ function Stopwatch() {
 
   const handleAdd = (runner, rowIndex) => {
     confirmDialog({
-      message: "Did you miss a split and want to add one below now?",
+      message: "Did you miss a split and want to add one above now?",
       header: "Confirmation",
       icon: "pi pi-exclamation-triangle",
       accept: () => AddLap(runner, rowIndex),
     });
   };
 
-  const AddLap = () => {}
+  const AddLap = (runner, rowIndex) => {
+    console.log('Adding a new line')
+    console.log('runner', runner)
+    console.log("rowIndex", rowIndex);
+
+    let lapsArray;
+    let setLapsArray;
+    switch (runner) {
+      case 1:
+        lapsArray = laps1;
+        setLapsArray = setLaps1;
+        break;
+      case 2:
+        lapsArray = laps2;
+        setLapsArray = setLaps2;
+        break;
+      case 3:
+        lapsArray = laps3;
+        setLapsArray = setLaps3;
+        break;
+      case 4:
+        lapsArray = laps4;
+        setLapsArray = setLaps4;
+        break;
+      default:
+        lapsArray = [];
+        setLapsArray = () => {};
+    }
+    if (lapsArray.length > 0) {
+      const thisValue = lapsArray[rowIndex];
+      const nextValue = lapsArray[rowIndex -1] || 0;
+      const valueToAdd = (thisValue + nextValue) / 2;
+      console.log('valueToAdd', valueToAdd)
+      let newLapsArray = [...lapsArray]
+      newLapsArray.splice(rowIndex, 0, valueToAdd);
+      //newLapsArray = newLapsArray.splice(runner, 0, valueToAdd);
+      console.log("newLapsArray", newLapsArray);
+      setLapsArray(newLapsArray);
+    } else {
+      setLapsArray([...lapsArray]);
+    }
+  };
   
 
   return (
