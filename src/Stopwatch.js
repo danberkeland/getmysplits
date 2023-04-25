@@ -12,7 +12,7 @@ import { formatData, formatLapTime, formatTime } from "./utils";
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
-import 'primeicons/primeicons.css';
+import "primeicons/primeicons.css";
 
 function Stopwatch() {
   const [isRunning, setIsRunning] = useState(false);
@@ -31,6 +31,9 @@ function Stopwatch() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const [visible, setVisible] = useState(false);
+  const [visible2, setVisible2] = useState(false);
+  const [editSplit, setEditSplit] = useState(null);
+  const [rowDataToEdit, setRowDataToEdit] = useState([]);
 
   const showDialog = () => {
     setVisible(true);
@@ -38,6 +41,14 @@ function Stopwatch() {
 
   const hideDialog = () => {
     setVisible(false);
+  };
+
+  const showDialog2 = () => {
+    setVisible2(true);
+  };
+
+  const hideDialog2 = () => {
+    setVisible2(false);
   };
 
   const intervalRef = useRef();
@@ -84,6 +95,43 @@ function Stopwatch() {
       setLapData(formatData(laps4));
     }
   }, [activeIndex]);
+
+  useEffect(() => {
+    if (editSplit) {
+      let lapsToEdit;
+      let SetLapsToEdit;
+      if (activeIndex === 0) {
+        lapsToEdit = laps1;
+        SetLapsToEdit = setLaps1;
+      }
+      if (activeIndex === 1) {
+        lapsToEdit = laps2;
+        SetLapsToEdit = setLaps2;
+      }
+      if (activeIndex === 2) {
+        lapsToEdit = laps3;
+        SetLapsToEdit = setLaps3;
+      }
+      if (activeIndex === 3) {
+        lapsToEdit = laps4;
+        SetLapsToEdit = setLaps4;
+      }
+     
+      let newNum =
+        Number(lapsToEdit[rowDataToEdit.lap - 1]) -
+        Number(
+          Math.floor(
+            (lapsToEdit[rowDataToEdit.lap - 1] -
+              (lapsToEdit[rowDataToEdit.lap - 2] || 0)) *
+              0.001
+          ) * 1000
+        ) +
+        Number(editSplit * 1000);
+      
+      lapsToEdit.splice(rowDataToEdit.lap - 1, 1, newNum);
+      setLapData(formatData(lapsToEdit));
+    }
+  }, [editSplit]);
 
   const handleStart = () => {
     if (!isRunning) {
@@ -233,9 +281,9 @@ function Stopwatch() {
   };
 
   const deleteTemplate = (rowData, index) => {
-    console.log('rowIndex', index.rowIndex)
-    console.log('index.props.value', index.props.value)
-    console.log('rowData', rowData)
+    console.log("rowIndex", index.rowIndex);
+    console.log("index.props.value", index.props.value);
+    console.log("rowData", rowData);
     return (
       <div className="p-d-flex p-jc-center">
         <Button
@@ -244,7 +292,7 @@ function Stopwatch() {
           className="p-button-danger"
           onClick={() => handleDelete(activeIndex + 1, index.rowIndex)}
         />
-        
+
         <Button
           size="small"
           icon="pi pi-arrow-up"
@@ -288,15 +336,31 @@ function Stopwatch() {
   };
 
   const lapTimeBody = (rowData, index) => {
-    console.log('rowData', Number(rowData.lapTime))
-    console.log('index', index)
+    console.log("rowData", Number(rowData.lapTime));
+    console.log("index", index);
     if (Number(rowData.lapTime) < 55) {
-      return <div style={{backgroundColor: "#ffcccc"}}>{rowData.lapTime}</div>;
+      return (
+        <span
+          style={{ backgroundColor: "#ffcccc" }}
+          onClick={() => handleLapTimeChange(activeIndex + 1, rowData)}
+        >
+          {rowData.lapTime}
+        </span>
+      );
     } else {
-      return rowData.lapTime;
+      return (
+        <span onClick={() => handleLapTimeChange(activeIndex + 1, rowData)}>
+          {rowData.lapTime}
+        </span>
+      );
     }
   };
 
+  const handleLapTimeChange = (runner, data) => {
+    setRowDataToEdit(data);
+    setEditSplit(data.lapTime);
+    setVisible2(true);
+  };
 
   const handleAdd = (runner, rowIndex) => {
     confirmDialog({
@@ -308,8 +372,8 @@ function Stopwatch() {
   };
 
   const AddLap = (runner, rowIndex) => {
-    console.log('Adding a new line')
-    console.log('runner', runner)
+    console.log("Adding a new line");
+    console.log("runner", runner);
     console.log("rowIndex", rowIndex);
 
     let lapsArray;
@@ -337,10 +401,10 @@ function Stopwatch() {
     }
     if (lapsArray.length > 0) {
       const thisValue = lapsArray[rowIndex];
-      const nextValue = lapsArray[rowIndex -1] || 0;
+      const nextValue = lapsArray[rowIndex - 1] || 0;
       const valueToAdd = (thisValue + nextValue) / 2;
-      console.log('valueToAdd', valueToAdd)
-      let newLapsArray = [...lapsArray]
+      console.log("valueToAdd", valueToAdd);
+      let newLapsArray = [...lapsArray];
       newLapsArray.splice(rowIndex, 0, valueToAdd);
       //newLapsArray = newLapsArray.splice(runner, 0, valueToAdd);
       console.log("newLapsArray", newLapsArray);
@@ -349,7 +413,11 @@ function Stopwatch() {
       setLapsArray([...lapsArray]);
     }
   };
-  
+
+  const handleEditSplit = (e) => {
+    console.log("Editting Split");
+    console.log("e values", e.target.value);
+  };
 
   return (
     <div>
@@ -394,6 +462,24 @@ function Stopwatch() {
               onChange={(e) => handleNames(e.target.value, 3)}
             />
           </div>
+        </div>
+      </Dialog>
+      <Dialog
+        visible={visible2}
+        onHide={hideDialog2}
+        header="Edit Lap Split"
+        footer={
+          <div>
+            <Button label="OK" onClick={hideDialog2} />
+          </div>
+        }
+      >
+        <div>
+          <InputText
+            className="p-inputtext-lg"
+            value={editSplit}
+            onChange={(e) => setEditSplit(e.target.value)}
+          />
         </div>
       </Dialog>
       <h1>Get My Splits</h1>
@@ -448,13 +534,12 @@ function Stopwatch() {
         activeIndex={activeIndex}
         onTabChange={(e) => setActiveIndex(e.index)}
       />
-      <DataTable value={lapData} >
+      <DataTable value={lapData}>
         <Column field="lap" header="Lap" />
-        <Column header="400" body={lapTimeBody}/>
+        <Column header="400" body={lapTimeBody} />
         <Column field="cumulativeLapTime" header="800" />
         <Column field="lap3Diff" header="1600" />
         <Column body={deleteTemplate} />
-        
       </DataTable>
     </div>
   );
