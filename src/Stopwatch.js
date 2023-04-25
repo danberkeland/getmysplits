@@ -276,6 +276,17 @@ function Stopwatch() {
     }
   };
 
+  const lapTimeBody = (rowData, index) => {
+    console.log('rowData', Number(rowData.lapTime))
+    console.log('index', index)
+    if (Number(rowData.lapTime) < 55) {
+      return <div style={{backgroundColor: "#ffcccc"}}>{rowData.lapTime}</div>;
+    } else {
+      return rowData.lapTime;
+    }
+  };
+  
+
   return (
     <div>
       <ConfirmDialog />
@@ -373,9 +384,9 @@ function Stopwatch() {
         activeIndex={activeIndex}
         onTabChange={(e) => setActiveIndex(e.index)}
       />
-      <DataTable value={lapData}>
+      <DataTable value={lapData} >
         <Column field="lap" header="Lap" />
-        <Column field="lapTime" header="400" />
+        <Column header="400" body={lapTimeBody}/>
         <Column field="cumulativeLapTime" header="800" />
         <Column field="lap3Diff" header="1600" />
         <Column body={actionBodyTemplate} />

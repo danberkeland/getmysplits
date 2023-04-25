@@ -86,6 +86,9 @@ code {
 
 .nameGroup > * {
   margin: 5px;
- 
+}
+
+.redRow {
+  background-color: #ffcccc;
 }
 
