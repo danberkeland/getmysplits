@@ -129,35 +129,32 @@ function Stopwatch() {
       let lapsToEdit;
       let SetLapsToEdit;
       if (activeIndex === 0) {
-        lapsToEdit = laps1;
+        lapsToEdit = [...laps1];
         SetLapsToEdit = setLaps1;
       }
       if (activeIndex === 1) {
-        lapsToEdit = laps2;
+        lapsToEdit = [...laps2];
         SetLapsToEdit = setLaps2;
       }
       if (activeIndex === 2) {
-        lapsToEdit = laps3;
+        lapsToEdit = [...laps3];
         SetLapsToEdit = setLaps3;
       }
       if (activeIndex === 3) {
-        lapsToEdit = laps4;
+        lapsToEdit = [...laps4];
         SetLapsToEdit = setLaps4;
       }
 
-      let newNum =
-        Number(lapsToEdit[rowDataToEdit.lap - 1]) -
-        Number(
-          Math.floor(
-            (lapsToEdit[rowDataToEdit.lap - 1] -
-              (lapsToEdit[rowDataToEdit.lap - 2] || 0)) *
-              0.001
-          ) * 1000
-        ) +
-        Number(editSplit * 1000);
+      //const seconds = Math.floor((timeInMs % 60000) / 1000);
 
+      let newNum =
+        (lapsToEdit[rowDataToEdit.lap-2] || startTime) + 
+        
+        Number(editSplit * 1000);
+      
       lapsToEdit.splice(rowDataToEdit.lap - 1, 1, newNum);
-      setLapData(formatData(lapsToEdit));
+     
+      SetLapsToEdit(lapsToEdit);
     }
   }, [editSplit]);
 
@@ -413,9 +410,6 @@ function Stopwatch() {
   };
 
   const AddLap = (runner, rowIndex) => {
-    console.log("Adding a new line");
-    console.log("runner", runner);
-    console.log("rowIndex", rowIndex);
 
     let lapsArray;
     let setLapsArray;
@@ -442,7 +436,7 @@ function Stopwatch() {
     }
     if (lapsArray.length > 0) {
       const thisValue = lapsArray[rowIndex];
-      const nextValue = lapsArray[rowIndex - 1] || 0;
+      const nextValue = lapsArray[rowIndex - 1] || startTime;
       const valueToAdd = (thisValue + nextValue) / 2;
       console.log("valueToAdd", valueToAdd);
       let newLapsArray = [...lapsArray];
