@@ -25,15 +25,16 @@ const formatTime = (timeInMs, startTime) => {
 };
 
 const formatLapTime = (timeInMs, startTime) => {
-  const elapsedTime = startTime ? timeInMs - startTime : timeInMs;
-  const date = new Date(elapsedTime);
-  return date.toLocaleTimeString("en-US", {
-    hour12: false,
-    timeZone: "UTC",
-    minute: "numeric",
-    second: "numeric"
-    
-  });
+  if (timeInMs >= 100000) {
+    const minutes = Math.floor(timeInMs / 60000);
+    const seconds = Math.floor((timeInMs % 60000) / 1000);
+    return `${minutes.toString()}:${seconds.toString().padStart(2, "0")}`;
+  } else {
+    const seconds = Math.floor(timeInMs / 1000);
+    const milliseconds = Math.floor((timeInMs % 1000) / 10);
+    //return `${seconds.toString()}.${milliseconds.toString().padStart(2, "0")}`;
+    return `${seconds.toString()}`;
+  }
 };
 
 const formatData = (laps, startTime) => {
@@ -41,14 +42,14 @@ const formatData = (laps, startTime) => {
 
   for (let i = 0; i < laps.length; i++) {
     const lapTime = laps[i];
-    const lapDiff = lapTime - (laps[i - 1] || 0);
-    const time800 = i < 1 ? null : laps[i] - (laps[i - 2] || 0);
-    const time1600 = i < 3 ? null : laps[i] - (laps[i - 4] || 0);
+    const lapDiff = lapTime - (laps[i - 1] || startTime);
+    const time800 = i < 1 ? null : lapTime - (laps[i - 2] || startTime);
+    const time1600 = i < 3 ? null : lapTime - (laps[i - 4] || startTime);
 
     data.push({
       lap: i + 1,
-      lapTime: i===0 ? formatLapTime(lapDiff, startTime) : formatLapTime(lapDiff),
-      cumulativeLapTime: time800 ? formatLapTime(time800, startTime) : "-",
+      lapTime: formatLapTime(lapDiff),
+      cumulativeLapTime: time800 ? formatLapTime(time800) : "-",
       lap3Diff: time1600 ? formatLapTime(time1600) : "-",
     });
   }
@@ -79,16 +80,8 @@ function Stopwatch() {
   const [rowDataToEdit, setRowDataToEdit] = useState([]);
   const [startTime, setStartTime] = useState(null);
 
-  const showDialog = () => {
-    setVisible(true);
-  };
-
   const hideDialog = () => {
     setVisible(false);
-  };
-
-  const showDialog2 = () => {
-    setVisible2(true);
   };
 
   const hideDialog2 = () => {
@@ -117,39 +110,20 @@ function Stopwatch() {
     console.log('startTime', startTime)
   }, [laps1])
 
-
-
   useEffect(() => {
-    setLapData(formatData(laps1, startTime));
-  }, [laps1]);
-
-  useEffect(() => {
-    setLapData(formatData(laps2, startTime));
-  }, [laps2]);
-
-  useEffect(() => {
-    setLapData(formatData(laps3, startTime));
-  }, [laps3]);
-
-  useEffect(() => {
-    setLapData(formatData(laps4, startTime));
-  }, [laps4]);
-
-  useEffect(() => {
+    let data;
     if (activeIndex === 0) {
-      setLapData(formatData(laps1));
+      data = formatData(laps1, startTime);
+    } else if (activeIndex === 1) {
+      data = formatData(laps2, startTime);
+    } else if (activeIndex === 2) {
+      data = formatData(laps3, startTime);
+    } else if (activeIndex === 3) {
+      data = formatData(laps4, startTime);
     }
-    if (activeIndex === 1) {
-      setLapData(formatData(laps2));
-    }
-    if (activeIndex === 2) {
-      setLapData(formatData(laps3));
-    }
-    if (activeIndex === 3) {
-      setLapData(formatData(laps4));
-    }
-  }, [activeIndex]);
-
+    setLapData(data);
+  }, [activeIndex, laps1, laps2, laps3, laps4, startTime]);
+  
   useEffect(() => {
     if (editSplit) {
       let lapsToEdit;
@@ -188,7 +162,7 @@ function Stopwatch() {
   }, [editSplit]);
 
   const handleStart = () => {
-    if (!isRunning) {
+    if (!isRunning && !startTime) {
       setIsRunning(true);
       setStartTime(Date.now()); // set start time to current time
       setElapsedTime(0);
@@ -197,15 +171,17 @@ function Stopwatch() {
         setElapsedTime(now - startTime); // calculate elapsed time
       }, 10);
     }
+    if (startTime > 0) {
+      handleReset()
+    }
   };
 
   const handleStop = () => {
     if (isRunning) {
       clearInterval(intervalRef.current);
       setIsRunning(false);
-      const elapsed = Date.now() - startTime;
-      setElapsedTime(elapsed);
-      setStartTime(null);
+      
+      
     }
   };
   
@@ -213,21 +189,22 @@ function Stopwatch() {
   const handleLap = (runner) => {
     if (isRunning) {
       if (runner === 1) {
-        setLaps1([...laps1, elapsedTime]);
+        setLaps1([...laps1, Date.now()]);
       }
       if (runner === 2) {
-        setLaps2([...laps2, elapsedTime]);
+        setLaps2([...laps2, Date.now()]);
       }
       if (runner === 3) {
-        setLaps3([...laps3, elapsedTime]);
+        setLaps3([...laps3, Date.now()]);
       }
       if (runner === 4) {
-        setLaps4([...laps4, elapsedTime]);
+        setLaps4([...laps4, Date.now()]);
       }
     }
   };
 
   const handleReset = () => {
+    setIsRunning(false)
     confirmDialog({
       message: "All splits will be deleted.  Are you sure?",
       header: "Confirmation",
@@ -239,9 +216,7 @@ function Stopwatch() {
   const resetTimer = () => {
     if (isRunning) {
       clearInterval(intervalRef.current);
-      setIsRunning(false);
-      const elapsed = Date.now() - startTime;
-      setElapsedTime(elapsed);
+      setIsRunning(false); 
       setStartTime(null);
     }
     setIsRunning(false);
@@ -265,7 +240,7 @@ function Stopwatch() {
           ? `${formatLapTime(laps1.length>1 ? 
               laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0) : laps1[laps1.length - 1] - startTime
             )}`
-          : `${formatLapTime(laps1[laps1.length - 1])}`}
+          : `${formatLapTime(laps1[laps1.length - 1] - startTime)}`}
       </span>
     </div>
   );
@@ -281,7 +256,7 @@ function Stopwatch() {
           ? `${formatLapTime(laps2.length>1 ? 
               laps2[laps2.length - 1] - (laps2[laps2.length - 2] || 0) : laps2[laps2.length - 1] - startTime
             )}`
-          : `${formatLapTime(laps2[laps2.length - 1])}`}
+          : `${formatLapTime(laps2[laps2.length - 1] - startTime)}`}
       </span>
     </div>
   );
@@ -297,7 +272,7 @@ function Stopwatch() {
           ? `${formatLapTime(laps3.length>1 ? 
               laps3[laps3.length - 1] - (laps3[laps3.length - 2] || 0) : laps3[laps3.length - 1] - startTime
             )}`
-          : `${formatLapTime(laps3[laps3.length - 1])}`}
+          : `${formatLapTime(laps3[laps3.length - 1] - startTime)}`}
       </span>
     </div>
   );
@@ -313,7 +288,7 @@ function Stopwatch() {
           ? `${formatLapTime(laps4.length>1 ? 
               laps4[laps4.length - 1] - (laps4[laps4.length - 2] || 0) : laps4[laps4.length - 1] - startTime
             )}`
-          : `${formatLapTime(laps4[laps4.length - 1])}`}
+          : `${formatLapTime(laps4[laps4.length - 1] - startTime)}`}
       </span>
     </div>
   );
