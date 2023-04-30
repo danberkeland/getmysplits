@@ -54,9 +54,8 @@ const formatData = (laps, startTime) => {
     });
   }
 
-  return data
+  return data;
 };
-
 
 function Stopwatch() {
   const [isRunning, setIsRunning] = useState(false);
@@ -107,8 +106,8 @@ function Stopwatch() {
   }, [laps1]);
 
   useEffect(() => {
-    console.log('startTime', startTime)
-  }, [laps1])
+    console.log("startTime", startTime);
+  }, [laps1]);
 
   useEffect(() => {
     let data;
@@ -123,7 +122,7 @@ function Stopwatch() {
     }
     setLapData(data);
   }, [activeIndex, laps1, laps2, laps3, laps4, startTime]);
-  
+
   useEffect(() => {
     if (editSplit) {
       let lapsToEdit;
@@ -148,12 +147,11 @@ function Stopwatch() {
       //const seconds = Math.floor((timeInMs % 60000) / 1000);
 
       let newNum =
-        (lapsToEdit[rowDataToEdit.lap-2] || startTime) + 
-        
+        (lapsToEdit[rowDataToEdit.lap - 2] || startTime) +
         Number(editSplit * 1000);
-      
+
       lapsToEdit.splice(rowDataToEdit.lap - 1, 1, newNum);
-     
+
       SetLapsToEdit(lapsToEdit);
     }
   }, [editSplit]);
@@ -169,7 +167,7 @@ function Stopwatch() {
       }, 10);
     }
     if (startTime > 0) {
-      handleReset()
+      handleReset();
     }
   };
 
@@ -177,11 +175,8 @@ function Stopwatch() {
     if (isRunning) {
       clearInterval(intervalRef.current);
       setIsRunning(false);
-      
-      
     }
   };
-  
 
   const handleLap = (runner) => {
     if (isRunning) {
@@ -201,7 +196,7 @@ function Stopwatch() {
   };
 
   const handleReset = () => {
-    setIsRunning(false)
+    setIsRunning(false);
     confirmDialog({
       message: "All splits will be deleted.  Are you sure?",
       header: "Confirmation",
@@ -213,7 +208,7 @@ function Stopwatch() {
   const resetTimer = () => {
     if (isRunning) {
       clearInterval(intervalRef.current);
-      setIsRunning(false); 
+      setIsRunning(false);
       setStartTime(null);
     }
     setIsRunning(false);
@@ -224,7 +219,6 @@ function Stopwatch() {
     setLaps4([]);
     setStartTime(null); // reset start time
   };
-  
 
   const splitLabel1 = (
     <div className={clicked === 1 ? `lapBox lapBox1` : `lapBox`}>
@@ -234,8 +228,10 @@ function Stopwatch() {
       <span className="runnerName">{names[0]}</span>
       <span className={isRunning ? "lapTime" : "stopped"}>
         {isRunning
-          ? `${formatLapTime(laps1.length>1 ? 
-              laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0) : laps1[laps1.length - 1] - startTime
+          ? `${formatLapTime(
+              laps1.length > 1
+                ? laps1[laps1.length - 1] - (laps1[laps1.length - 2] || 0)
+                : laps1[laps1.length - 1] - startTime
             )}`
           : `${formatLapTime(laps1[laps1.length - 1] - startTime)}`}
       </span>
@@ -250,8 +246,10 @@ function Stopwatch() {
       <span className="runnerName">{names[1]}</span>
       <span className={isRunning ? "lapTime" : "stopped"}>
         {isRunning
-          ? `${formatLapTime(laps2.length>1 ? 
-              laps2[laps2.length - 1] - (laps2[laps2.length - 2] || 0) : laps2[laps2.length - 1] - startTime
+          ? `${formatLapTime(
+              laps2.length > 1
+                ? laps2[laps2.length - 1] - (laps2[laps2.length - 2] || 0)
+                : laps2[laps2.length - 1] - startTime
             )}`
           : `${formatLapTime(laps2[laps2.length - 1] - startTime)}`}
       </span>
@@ -266,8 +264,10 @@ function Stopwatch() {
       <span className="runnerName">{names[2]}</span>
       <span className={isRunning ? "lapTime" : "stopped"}>
         {isRunning
-          ? `${formatLapTime(laps3.length>1 ? 
-              laps3[laps3.length - 1] - (laps3[laps3.length - 2] || 0) : laps3[laps3.length - 1] - startTime
+          ? `${formatLapTime(
+              laps3.length > 1
+                ? laps3[laps3.length - 1] - (laps3[laps3.length - 2] || 0)
+                : laps3[laps3.length - 1] - startTime
             )}`
           : `${formatLapTime(laps3[laps3.length - 1] - startTime)}`}
       </span>
@@ -282,8 +282,10 @@ function Stopwatch() {
       <span className="runnerName">{names[3]}</span>
       <span className={isRunning ? "lapTime" : "stopped"}>
         {isRunning
-          ? `${formatLapTime(laps4.length>1 ? 
-              laps4[laps4.length - 1] - (laps4[laps4.length - 2] || 0) : laps4[laps4.length - 1] - startTime
+          ? `${formatLapTime(
+              laps4.length > 1
+                ? laps4[laps4.length - 1] - (laps4[laps4.length - 2] || 0)
+                : laps4[laps4.length - 1] - startTime
             )}`
           : `${formatLapTime(laps4[laps4.length - 1] - startTime)}`}
       </span>
@@ -322,7 +324,6 @@ function Stopwatch() {
   };
 
   const deleteTemplate = (rowData, index) => {
-    
     return (
       <div className="p-d-flex p-jc-center">
         <Button
@@ -375,11 +376,17 @@ function Stopwatch() {
   };
 
   const lapTimeBody = (rowData, index) => {
-    
     if (Number(rowData.lapTime) < 55) {
       return (
         <span
-          style={{ backgroundColor: "#ffcccc" }}
+          style={{
+            fontWeight: "bold",
+            color: "red",
+            backgroundColor: "#ffcccc",
+            padding: "8px 14px",
+            border: "2px",
+            borderRadius: "16px",
+          }}
           onClick={() => handleLapTimeChange(activeIndex + 1, rowData)}
         >
           {rowData.lapTime}
@@ -410,7 +417,6 @@ function Stopwatch() {
   };
 
   const AddLap = (runner, rowIndex) => {
-
     let lapsArray;
     let setLapsArray;
     switch (runner) {
@@ -556,7 +562,6 @@ function Stopwatch() {
           label="Reset"
           className="p-button-secondary"
           onClick={handleReset}
-          
         />
         <Button
           label="Names"
